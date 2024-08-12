@@ -20,6 +20,7 @@ const LocationMarker = ({ markers }:any) => {
           const position = [parseFloat(marker.lat) || null, parseFloat(marker.long) || null];
           return (
             <MarkerComponent
+              key={index}
               position={position}
               index={index}
               marker={marker}

@@ -8,6 +8,7 @@ const MarkerComponent = ({
   index,
   marker,
   openPopup,
+  key,
 }:any) => {
   // const isMobile = useResponsive("down", "sm");
   return (
@@ -16,7 +17,7 @@ const MarkerComponent = ({
         style={{
           cursor: "pointer",
         }}
-        key={index}
+        key={key}
         latitude={position[0]}
         longitude={position[1]}
         onClick={() => {
@@ -32,7 +33,6 @@ const MarkerComponent = ({
           }}
         >
           <img
-            // src={"/logo/location-icon-light.png"}
             src="/location-icon-light.png"
             style={{ width: "40px", height: "40px" }}
             alt="School Logo"

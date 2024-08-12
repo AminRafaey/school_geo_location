@@ -1,31 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
-import {
-  getAllCountryAndCount,
-} from "services/SchoolServiceWithoutCache";
 import { getSchoolFull, updateLatitudeLongitude } from "@/services/GeoLocationService";
 
 /**
- * @description - get all country and their check how many school exist in specific country.
+ * @description - get all school or address and update latitude and longitude on the base of address.
  * @param req - Req.
  * @param res - Res.
- * @returns - Return school data against a country.
+ * @returns - Return school data .
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 async function LatitudeLongitude(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     const apiKey = 'AIzaSyCpamFgUVka1UyYjSTSpQ61bkfGjqNr-0E';
-    let geoLocationData;
     try {
-        // const response = await axios.get(geocodeUrl);
-        const data=  await getSchoolFull();
-        // for latter use
+      const data=  await getSchoolFull();
+      // for latter use to update Latitude Longitude on the base of Loation 
+    // const response = await axios.get(geocodeUrl);
     //     data?.map(async(data:any)=>{
     //     const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(data?.address)}&key=${apiKey}`;
     //     const response = await axios.get(geocodeUrl);
     //     updateLatitudeLongitude(data?.id,response.data?.results?.[0]?.geometry?.location)
         
-    //     console.log('Reponse Data  api',response.data?.results?.[0]?.geometry?.location)
     //     return response.data
     // })
         

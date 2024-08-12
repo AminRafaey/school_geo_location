@@ -3,15 +3,13 @@ import LocationMarker from "./components/LocationMarker";
 import { Map } from "react-map-gl";
 
 
-const SchoolsMap = ({ schoolData }:any) => {
-  console.log('School Data from Front End',schoolData)
-  
-
+const SchoolsMap = ({ schoolData }:any) => {  
   return (
     <div style={{
+      // for latter use
       // width: "calc(100% - 640px)",
       width:"100%",
-  height: "100vh",
+      height: "100vh",
     }}>
 
     <Map
