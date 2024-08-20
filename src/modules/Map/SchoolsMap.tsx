@@ -1,31 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import LocationMarker from "./components/LocationMarker";
 import { Map } from "react-map-gl";
+import FilterCard from "./components/FilterCard";
+import { LocationPageSection, LocationPageWrapper, MapSection } from "./components/location.styled";
 
 
-const SchoolsMap = ({ schoolData }:any) => {  
+const SchoolsMap = ({ schoolData }: any) => {
+  const [finalFilterData, setFinalFilterData] = useState(schoolData);
+
   return (
-    <div style={{
-      // for latter use
-      // width: "calc(100% - 640px)",
-      width:"100%",
-      height: "100vh",
-    }}>
-
-    <Map
+    <>
+      <LocationPageWrapper>
+        <LocationPageSection>
+          <FilterCard
+            schoolData={schoolData}
+            setFinalFilterData={setFinalFilterData}
+          />
+        </LocationPageSection>
+        <MapSection>
+          <Map
             initialViewState={{
               zoom: 5,
-              latitude: parseFloat(schoolData?.[0]?.lat),
-              longitude: parseFloat(schoolData?.[0]?.long),
+              latitude: parseFloat(finalFilterData?.[0]?.lat),
+              longitude: parseFloat(finalFilterData?.[0]?.long),
             }}
             // @ts-ignore
             mapLib={import("mapbox-gl")}
             mapboxAccessToken="pk.eyJ1IjoiY3NuIiwiYSI6ImNpdnRvam1qeDAwMXgyenRlZjZiZWc1a2wifQ.Gr5pLJzG-1tucwY4h-rGdA"
             mapStyle="mapbox://styles/mapbox/dark-v10"
           >
-            <LocationMarker markers={schoolData} />
+            <LocationMarker markers={finalFilterData} />
           </Map>
-    </div>
+        </MapSection>
+      </LocationPageWrapper>
+    </>
   );
 };
 
