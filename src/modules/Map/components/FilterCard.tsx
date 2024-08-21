@@ -91,12 +91,7 @@ const FilterCard = ({
   });
 
   const handleFormSubmit = (data: any) => {
-    if (data?.nameOfCollege) {
-      const schoolNameData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.nameOfCollege === data?.nameOfCollege
-      );
-      setFinalFilterData(schoolNameData || []);
-    } else if (data?.division) {
+    if (data?.division) {
       const filterDivsionData = schoolData?.filter(
         (schoolsData: any) => schoolsData?.division === data?.division
       );
@@ -106,6 +101,11 @@ const FilterCard = ({
         (schoolsData: any) => schoolsData?.state === data?.state
       );
       setFinalFilterData(filterStateData || []);
+    } else {
+      const schoolNameData = schoolData?.filter(
+        (schoolsData: any) => schoolsData?.nameOfCollege === data?.nameOfCollege
+      );
+      setFinalFilterData(schoolNameData || []);
     }
     // reset();
   };
