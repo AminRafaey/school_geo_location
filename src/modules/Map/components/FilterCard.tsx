@@ -45,11 +45,6 @@ const StyledInputBase = styled(InputBase)(({ theme }: any) => ({
   "& .MuiInputBase-input": {
     padding: theme.spacing(2, 2, 2, 0),
     paddingLeft: "12px",
-    [theme.breakpoints.up("sm")]: {
-      "&:focus": {
-        width: "20ch",
-      },
-    },
   },
 }));
 
