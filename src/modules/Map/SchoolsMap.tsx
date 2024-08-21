@@ -11,25 +11,23 @@ import {
 const SchoolsMap = ({ schoolData }: any) => {
   const [finalFilterData, setFinalFilterData] = useState(schoolData || []);
   const handleFormSubmit = (data: any) => {
+    let filteredData = schoolData;
+
     if (data?.nameOfCollege) {
-      console.log("data?.nameOfCollege", data?.nameOfCollege);
-      const schoolNameDataFilter = schoolData?.filter(
+      filteredData = schoolData?.filter(
         (schoolsData: any) => schoolsData?.nameOfCollege === data?.nameOfCollege
       );
-      console.log("schoolNameDataFilter", schoolNameDataFilter);
-      setFinalFilterData(schoolNameDataFilter || []);
     } else if (data?.division) {
-      const filterDivsionData = schoolData?.filter(
+      filteredData = schoolData?.filter(
         (schoolsData: any) => schoolsData?.division === data?.division
       );
-      setFinalFilterData(filterDivsionData || []);
     } else if (data?.state) {
-      const filterStateData = schoolData?.filter(
+      filteredData = schoolData?.filter(
         (schoolsData: any) => schoolsData?.state === data?.state
       );
-      setFinalFilterData(filterStateData || []);
     }
-    // reset();
+
+    setFinalFilterData(filteredData || []);
   };
   return (
     <>
@@ -45,8 +43,8 @@ const SchoolsMap = ({ schoolData }: any) => {
           <Map
             initialViewState={{
               zoom: 5,
-              latitude: parseFloat(finalFilterData?.[0]?.lat),
-              longitude: parseFloat(finalFilterData?.[0]?.long),
+              latitude: parseFloat(finalFilterData?.[0]?.lat || 0),
+              longitude: parseFloat(finalFilterData?.[0]?.long || 0),
             }}
             // @ts-ignore
             mapLib={import("mapbox-gl")}

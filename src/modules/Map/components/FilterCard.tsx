@@ -64,7 +64,6 @@ const FilterCard = ({
   };
   handleFormSubmit: any;
 }) => {
-  // console.log("Schools Data", schoolData);
   const divisionsDataFilter = schoolData?.filter(
     (object: any, index: number, self: any) =>
       index === self.findIndex((t: any) => t.division === object.division)

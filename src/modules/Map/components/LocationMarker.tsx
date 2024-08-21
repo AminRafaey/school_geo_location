@@ -18,8 +18,8 @@ const LocationMarker = ({ markers }: any) => {
     <> 
       {markers?.map((marker: any, index: any) => {
         const position = [
-          parseFloat(marker?.lat) || null,
-          parseFloat(marker?.long) || null,
+          parseFloat(marker?.lat || 0),
+          parseFloat(marker?.long || 0),
         ];
         return (
           <MarkerComponent
@@ -37,8 +37,8 @@ const LocationMarker = ({ markers }: any) => {
             marginTop: "8px",
             width: "200px",
           }}
-          latitude={parseFloat(markers?.[selectedIndex]?.lat)}
-          longitude={parseFloat(markers?.[selectedIndex]?.long)}
+          latitude={parseFloat(markers?.[selectedIndex]?.lat || 0)}
+          longitude={parseFloat(markers?.[selectedIndex]?.long || 0)}
           onClose={closePopup}
           closeButton={true}
           closeOnClick={false}
