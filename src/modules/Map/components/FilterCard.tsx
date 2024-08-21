@@ -55,16 +55,16 @@ const StyledInputBase = styled(InputBase)(({ theme }: any) => ({
 
 const FilterCard = ({
   schoolData,
-  setFinalFilterData,
   finalFilterData,
+  handleFormSubmit,
 }: {
   schoolData: any;
-  setFinalFilterData: any;
   finalFilterData: {
     length: number;
   };
+  handleFormSubmit: any;
 }) => {
-  console.log("Schools Data", schoolData);
+  // console.log("Schools Data", schoolData);
   const divisionsDataFilter = schoolData?.filter(
     (object: any, index: number, self: any) =>
       index === self.findIndex((t: any) => t.division === object.division)
@@ -89,27 +89,6 @@ const FilterCard = ({
   } = useForm({
     reValidateMode: "onChange",
   });
-
-  const handleFormSubmit = (data: any) => {
-    if (data?.nameOfCollege) {
-      console.log("data?.nameOfCollege", data?.nameOfCollege);
-      const schoolNameData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.nameOfCollege === data?.nameOfCollege
-      );
-      setFinalFilterData(schoolNameData || []);
-    } else if (data?.division) {
-      const filterDivsionData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.division === data?.division
-      );
-      setFinalFilterData(filterDivsionData || []);
-    } else if (data?.state) {
-      const filterStateData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.state === data?.state
-      );
-      setFinalFilterData(filterStateData || []);
-    }
-    // reset();
-  };
 
   return (
     <>
