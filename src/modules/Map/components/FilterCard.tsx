@@ -134,7 +134,6 @@ const FilterCard = ({
                   </SearchIconWrapper>
                   <StyledInputBase
                     value={field.value}
-                    defaultValue={divisionsData?.[0]?.nameOfCollege}
                     placeholder="Search…"
                     inputProps={{ "aria-label": "search" }}
                     onChange={(e) => {
