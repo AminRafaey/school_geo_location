@@ -56,9 +56,13 @@ const StyledInputBase = styled(InputBase)(({ theme }: any) => ({
 const FilterCard = ({
   schoolData,
   setFinalFilterData,
+  finalFilterData,
 }: {
   schoolData: any;
   setFinalFilterData: any;
+  finalFilterData: {
+    length: number;
+  };
 }) => {
   console.log("Schools Data", schoolData);
   const divisionsDataFilter = schoolData?.filter(
@@ -85,26 +89,25 @@ const FilterCard = ({
   } = useForm({
     reValidateMode: "onChange",
   });
-  
 
   const handleFormSubmit = (data: any) => {
     if (data?.nameOfCollege) {
       const schoolNameData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.nameOfCollege == data?.nameOfCollege
+        (schoolsData: any) => schoolsData?.nameOfCollege === data?.nameOfCollege
       );
-      setFinalFilterData(schoolNameData);
+      setFinalFilterData(schoolNameData || []);
     } else if (data?.division) {
       const filterDivsionData = schoolData?.filter(
         (schoolsData: any) => schoolsData?.division === data?.division
       );
-      setFinalFilterData(filterDivsionData);
+      setFinalFilterData(filterDivsionData || []);
     } else if (data?.state) {
       const filterStateData = schoolData?.filter(
         (schoolsData: any) => schoolsData?.state === data?.state
       );
-      setFinalFilterData(filterStateData);
+      setFinalFilterData(filterStateData || []);
     }
-    reset();
+    // reset();
   };
 
   return (
@@ -112,7 +115,7 @@ const FilterCard = ({
       <FilterCardWrapper>
         <Amenities>Schools</Amenities>
         <AmenitiesDescription>
-          Number of Schools  {schoolData?.length}
+          Number of Schools {finalFilterData?.length}
         </AmenitiesDescription>
         <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
           <AmenitiesWrapper>
@@ -153,7 +156,7 @@ const FilterCard = ({
                     options={divisionsData}
                     width="100%"
                     backgroundColor="#1B1B1B"
-                    label="Division "
+                    label="Division"
                     error={errors?.martialArts && "Please Enter Division"}
                   />
                 </div>
