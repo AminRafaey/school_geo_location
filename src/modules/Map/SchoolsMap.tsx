@@ -14,8 +14,10 @@ const SchoolsMap = ({ schoolData }: any) => {
     let filteredData = schoolData;
 
     if (data?.nameOfCollege) {
-      filteredData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.nameOfCollege === data?.nameOfCollege
+      filteredData = schoolData?.filter((schoolsData: any) =>
+        schoolsData?.nameOfCollege
+          ?.toLowerCase()
+          .includes(data?.nameOfCollege?.toLowerCase())
       );
     } else if (data?.division) {
       filteredData = schoolData?.filter(

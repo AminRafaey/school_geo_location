@@ -1,7 +1,7 @@
 import SchoolsMap from "@/modules/Map/SchoolsMap";
 import { BASE_URL } from "@/services/config";
 import axios from "axios";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 import React from "react";
 
@@ -13,7 +13,7 @@ const SchoolMap = ({ data }: any) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   try {
     const baseUrl = `${BASE_URL}api/GeoLocation/latitude-longitude`;
     const { data } = await axios(`${baseUrl}`);
