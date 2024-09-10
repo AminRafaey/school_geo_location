@@ -2,21 +2,21 @@
 import React, { useState } from "react";
 import { Popup } from "react-map-gl";
 import MarkerComponent from "./MarkerComponent";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
 const LocationMarker = ({ markers }: any) => {
-  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const openPopup = (index: any) => {
+  const openPopup = (index: number) => {
     setSelectedIndex(index);
   };
-
   const closePopup = () => {
     setSelectedIndex(null);
   };
-
   return (
-    <> 
-      {markers?.map((marker: any, index: any) => {
+    <>
+      {markers?.map((marker: any, index: number) => {
         const position = [
           parseFloat(marker?.lat || 0),
           parseFloat(marker?.long || 0),
@@ -37,60 +37,73 @@ const LocationMarker = ({ markers }: any) => {
             marginTop: "8px",
             width: "200px",
           }}
-          latitude={parseFloat(markers?.[selectedIndex]?.lat || 0)}
-          longitude={parseFloat(markers?.[selectedIndex]?.long || 0)}
+          latitude={parseFloat(markers?.[selectedIndex]?.lat || "0")}
+          longitude={parseFloat(markers?.[selectedIndex]?.long || "0")}
           onClose={closePopup}
-          closeButton={true}
+          closeButton={false} 
           closeOnClick={false}
-          anchor="top" // Position the popup at the bottom of the marker
+          anchor="top"
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginTop: "10px",
-            }}
-          >
-            <img
-              src={
-                markers?.[selectedIndex]?.logo?.[0]?.url ||
-                "/logo/dojo-small.png"
-              }
+          <div >
+            <IconButton
+              onClick={closePopup}
               style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
+                position: "absolute",
+                top: "0", 
+                right: "0", 
+                color: "#000", 
               }}
-              alt="School Logo"
-            />
+            >
+              <CloseIcon style={{ fontSize: "16px" }} />
+            </IconButton>
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
-                marginLeft: "10px",
+                alignItems: "center",
+                marginTop: "10px",
               }}
             >
-              <span
+              <img
+                src={
+                  markers?.[selectedIndex]?.logo?.[0]?.url ||
+                  "/logo/dojo-small.png"
+                }
                 style={{
-                  fontSize: "10px",
-                  fontWeight: "600",
-                  color: "#000000",
-                  lineHeight: "1.5",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                }}
+                alt="School Logo"
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginLeft: "10px",
                 }}
               >
-                {markers?.[selectedIndex]?.nameOfCollege}
-              </span>
-              <span
-                style={{
-                  fontSize: "8px",
-                  fontWeight: "400",
-                  marginTop: "5px",
-                  lineHeight: "1.5",
-                  color: "#000000",
-                }}
-              >
-                {markers?.[selectedIndex]?.address}
-              </span>
+                <span
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: "600",
+                    color: "#000000",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  {markers?.[selectedIndex]?.nameOfCollege}
+                </span>
+                <span
+                  style={{
+                    fontSize: "8px",
+                    fontWeight: "400",
+                    marginTop: "5px",
+                    lineHeight: "1.5",
+                    color: "#000",
+                  }}
+                >
+                  {markers?.[selectedIndex]?.address}
+                </span>
+              </div>
             </div>
           </div>
         </Popup>

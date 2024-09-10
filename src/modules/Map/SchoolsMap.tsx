@@ -28,7 +28,6 @@ const SchoolsMap = ({ schoolData }: any) => {
         (schoolsData: any) => schoolsData?.state === data?.state
       );
     }
-
     setFinalFilterData(filteredData || []);
   };
   return (
@@ -39,6 +38,7 @@ const SchoolsMap = ({ schoolData }: any) => {
             schoolData={schoolData}
             handleFormSubmit={handleFormSubmit}
             finalFilterData={finalFilterData}
+            setFinalFilterData={setFinalFilterData}
           />
         </LocationPageSection>
         <MapSection>
@@ -64,5 +64,4 @@ const SchoolsMap = ({ schoolData }: any) => {
     </>
   );
 };
-
 export default SchoolsMap;
