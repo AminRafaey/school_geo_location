@@ -11,9 +11,11 @@ const LocationMarker = ({ markers }: any) => {
   const openPopup = (index: number) => {
     setSelectedIndex(index);
   };
+
   const closePopup = () => {
     setSelectedIndex(null);
   };
+
   return (
     <>
       {markers?.map((marker: any, index: number) => {
@@ -36,22 +38,26 @@ const LocationMarker = ({ markers }: any) => {
           style={{
             marginTop: "8px",
             width: "200px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "auto",
           }}
           latitude={parseFloat(markers?.[selectedIndex]?.lat || "0")}
           longitude={parseFloat(markers?.[selectedIndex]?.long || "0")}
           onClose={closePopup}
-          closeButton={false} 
+          closeButton={false}
           closeOnClick={false}
           anchor="top"
         >
-          <div >
+          <div style={{ position: "relative", padding: "10px", flex: "1" }}>
             <IconButton
               onClick={closePopup}
               style={{
                 position: "absolute",
-                top: "0", 
-                right: "0", 
-                color: "#000", 
+                top: "-5px",
+                right: "-5px",
+                color: "#000",
               }}
             >
               <CloseIcon style={{ fontSize: "16px" }} />
@@ -60,7 +66,6 @@ const LocationMarker = ({ markers }: any) => {
               style={{
                 display: "flex",
                 alignItems: "center",
-                marginTop: "10px",
               }}
             >
               <img
@@ -94,7 +99,7 @@ const LocationMarker = ({ markers }: any) => {
                 </span>
                 <span
                   style={{
-                    fontSize: "8px",
+                    fontSize: "10px",
                     fontWeight: "400",
                     marginTop: "5px",
                     lineHeight: "1.5",
@@ -105,6 +110,35 @@ const LocationMarker = ({ markers }: any) => {
                 </span>
               </div>
             </div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <a
+              href={markers?.[selectedIndex]?.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: "11px",
+                fontWeight: "600",
+                color: "#0000FF",
+                right: "-5px",
+                cursor: "pointer",
+                textDecoration: "none",
+                display: "block",
+                textAlign: "center",
+                transition: "opacity 0.3s ease",
+                marginLeft:"48px"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.textDecoration = "underline";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.textDecoration = "none";
+              }}
+            >
+              Visit Staff Directory
+            </a>
           </div>
         </Popup>
       )}
