@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -12,6 +11,7 @@ import {
   CleanAll,
   FilterCardWrapper,
 } from "./location.styled";
+
 const FilterCard = ({
   schoolData,
   finalFilterData,
@@ -27,7 +27,7 @@ const FilterCard = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("");
-  const [divisionFilter, setDivisionFilter] = useState<string>("");
+  const [divisionFilter, setDivisionFilter] = useState("");
 
   const divisionsDataFilter = schoolData?.filter(
     (object: any, index: number, self: any) =>
@@ -42,17 +42,8 @@ const FilterCard = ({
       index === self.findIndex((t: any) => t.state === object.state)
   );
   const stateData = stateDataFilter?.map((data: any) => data?.state).sort();
-
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    reValidateMode: "onChange",
-  });
   useEffect(() => {
-    const filterData = (data: any) => {
+    const filterData = () => {
       let filteredData = schoolData;
       if (stateFilter) {
         filteredData = filteredData.filter(
@@ -64,202 +55,152 @@ const FilterCard = ({
           (schoolsData: any) => schoolsData?.division === divisionFilter
         );
       }
-      if (data?.nameOfCollege) {
+      if (searchTerm) {
         filteredData = filteredData.filter((schoolsData: any) =>
           schoolsData?.nameOfCollege
             ?.toLowerCase()
-            .includes(data?.nameOfCollege?.toLowerCase())
+            .includes(searchTerm.toLowerCase())
         );
       }
       setFinalFilterData(filteredData);
-      return filteredData;
     };
 
-    const data = {
-      nameOfCollege: searchTerm,
-    };
+    filterData();
+  }, [searchTerm, stateFilter, divisionFilter, schoolData, setFinalFilterData]);
 
-    filterData(data);
-  }, [searchTerm, stateFilter, divisionFilter, schoolData, setFinalFilterData]); 
   const handleSearchIconClick = () => {
-    handleSubmit(handleFormSubmit)();
+    handleFormSubmit();
   };
   return (
-    <>
-      <FilterCardWrapper>
-        <Amenities>Schools</Amenities>
-        <AmenitiesDescription>
-          Number of Schools {finalFilterData?.length}
-        </AmenitiesDescription>
-        <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
+    <FilterCardWrapper>
+      <Amenities>Schools</Amenities>
+      <AmenitiesDescription>
+        Number of Schools {finalFilterData?.length}
+      </AmenitiesDescription>
 
-          <AmenitiesWrapper>
-            {/* State */}
-            <Controller
-              name="state"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <div style={{ marginBottom: "20px" }}>
-                  <Autocomplete
-                    value={field.value || null}
-                    onChange={(event, newValue) => {
-                      field.onChange(newValue);
-                      setStateFilter(newValue ? String(newValue) : "");
-                      setDivisionFilter("");
-                    }}
-                    options={stateData || []}
-                    getOptionLabel={(option) => option || ""}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="State"
-                        variant="outlined"
-                        error={Boolean(errors.state)}
-                        helperText={errors.state ? "Please Enter State" : ""}
-                        sx={{
-                          backgroundColor: "#1B1B1B",
-                          color: "#b0b0b0",
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                              borderColor: "#3d3d3d",
-                            },
-                            "&:hover fieldset": {
-                              borderColor: "#737373",
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#737373",
-                            },
-                            "& input": {
-                              color: "#b0b0b0",
-                            },
-                          },
-                          "& .MuiInputLabel-root": {
-                            color: "#b0b0b0",
-                          },
-                          "& .MuiFormHelperText-root": {
-                            color: "#f44336",
-                          },
-                        }}
-                      />
-                    )}
-                    sx={{
-                      width: "100%",
-                      "& .MuiAutocomplete-popupIndicator": {
+      <form onSubmit={(e) => e.preventDefault()}>
+        <AmenitiesWrapper>
+          {/* State */}
+          <div style={{ marginBottom: "20px" }}>
+            <Autocomplete
+              value={stateFilter}
+              onChange={(event, newValue) => {
+                setStateFilter(newValue || "");
+                setDivisionFilter("");
+              }}
+              options={stateData || []}
+              getOptionLabel={(option) => option || ""}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="State"
+                  variant="outlined"
+                  sx={{
+                    backgroundColor: "#1B1B1B",
+                    color: "#b0b0b0",
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#3d3d3d",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#737373",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#737373",
+                      },
+                      "& input": {
                         color: "#b0b0b0",
                       },
-                      "& .MuiAutocomplete-clearIndicator": {
-                        color: "#b0b0b0",
-                      },
-                      "& .MuiAutocomplete-listbox": {
-                        backgroundColor: "#1B1B1B",
-                        color: "#b0b0b0",
-                      },
-                    }}
-                  />
-                </div>
-              )}
-            />
-            {/* Division */}
-            <Controller
-              name="division"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <div style={{ marginBottom: "20px" }}>
-                  <BasicSelect
-                    value={field?.value || ""}
-                    onChange={(e) => {
-                      field?.onChange(e);
-                      setDivisionFilter(String(e));
-                    }}
-                    options={divisionsData}
-                    width="100%"
-                    backgroundColor="#1B1B1B"
-                    label="Division"
-                    error={errors?.division && "Please Enter Division"}
-                  />
-                </div>
-              )}
-            />
-            {/* Search */}
-            <Controller
-              name="nameOfCollege"
-              control={control}
-              defaultValue=""
-              render={({ field }) => {
-                return (
-                  <TextField
-                    {...field}
-                    label="Search"
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      setSearchTerm(e.target.value);
-                    }}
-                    value={field.value || ""}
-                    variant="outlined"
-                    error={Boolean(errors.nameOfCollege)}
-                    helperText={
-                      errors.nameOfCollege ? "Please Enter College Name" : ""
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <SearchIcon
-                            sx={{
-                              color: "#737373 !important",
-                              cursor: "pointer",
-                            }}
-                            onClick={handleSearchIconClick}
-                          />
-                        </InputAdornment>
-                      ),
-                      style: {
-                        color: "#b0b0b0",
-                        backgroundColor: "#1B1B1B",
-                      },
-                    }}
-                    sx={{
-                      backgroundColor: "#1B1B1B",
+                    },
+                    "& .MuiInputLabel-root": {
                       color: "#b0b0b0",
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#3d3d3d",
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#737373",
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#737373",
-                        },
-                      },
-                      "& .MuiInputLabel-root": {
-                        color: "#b0b0b0",
-                      },
-                      "& .MuiFormHelperText-root": {
-                        color: "#f44336",
-                      },
-                    }}
-                  />
-                );
+                    },
+                  }}
+                />
+              )}
+              sx={{
+                width: "100%",
+                "& .MuiAutocomplete-popupIndicator": {
+                  color: "#b0b0b0",
+                },
+                "& .MuiAutocomplete-clearIndicator": {
+                  color: "#b0b0b0",
+                },
+                "& .MuiAutocomplete-listbox": {
+                  backgroundColor: "#1B1B1B",
+                  color: "#b0b0b0",
+                },
               }}
             />
-          </AmenitiesWrapper>
-          <CleanAll
-            onClick={() => {
-              setValue("nameOfCollege", "");
-              setValue("division", "");
-              setValue("state", "");
-              setSearchTerm("");
-              setStateFilter("");
-              setDivisionFilter("");
+          </div>
+
+          {/* Division */}
+          <div style={{ marginBottom: "20px" }}>
+            <BasicSelect
+              value={divisionFilter}
+              onChange={(e) => setDivisionFilter(String(e))}
+              options={divisionsData}
+              width="100%"
+              backgroundColor="#1B1B1B"
+              label="Division"
+            />
+          </div>
+          {/* Search */}
+          <TextField
+            label="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon
+                    sx={{
+                      color: "#737373 !important",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleSearchIconClick}
+                  />
+                </InputAdornment>
+              ),
+              style: {
+                color: "#b0b0b0",
+                backgroundColor: "#1B1B1B",
+              },
             }}
-          >
-            Clear Filter
-          </CleanAll>
-        </form>
-      </FilterCardWrapper>
-    </>
+            sx={{
+              backgroundColor: "#1B1B1B",
+              color: "#b0b0b0",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "#3d3d3d",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#737373",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#737373",
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: "#b0b0b0",
+              },
+            }}
+          />
+        </AmenitiesWrapper>
+
+        <CleanAll
+          onClick={() => {
+            setSearchTerm("");
+            setStateFilter("");
+            setDivisionFilter("");
+          }}
+        >
+          Clear Filter
+        </CleanAll>
+      </form>
+    </FilterCardWrapper>
   );
 };
+
 export default FilterCard;
