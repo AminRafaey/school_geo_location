@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
-import { Box, Stack, styled } from "@mui/system";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import BasicSelect from "@/shared/components/BasicSelect/BasicSelect";
 import {
@@ -13,34 +12,6 @@ import {
   CleanAll,
   FilterCardWrapper,
 } from "./location.styled";
-
-const Search = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "row-reverse",
-  borderRadius: "6px",
-  marginBottom: "30px",
-  backgroundColor: "#1B1B1B",
-  alignItems: "center",
-  border: "2px solid #3d3d3d",
-  color: "#FFFFFF !important",
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-}));
-
-const filter = createFilterOptions();
-
 const FilterCard = ({
   schoolData,
   finalFilterData,
@@ -54,7 +25,6 @@ const FilterCard = ({
   };
   handleFormSubmit: any;
 }) => {
-  const [filteredOptions, setFilteredOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("");
   const [divisionFilter, setDivisionFilter] = useState<string>("");
@@ -78,19 +48,16 @@ const FilterCard = ({
     control,
     formState: { errors },
     setValue,
-    reset,
   } = useForm({
     reValidateMode: "onChange",
   });
-
   useEffect(() => {
     const filterData = (data: any) => {
       let filteredData = schoolData;
-
       if (stateFilter) {
         filteredData = filteredData.filter(
           (schoolsData: any) => schoolsData?.state === stateFilter
-        );    
+        );
       }
       if (divisionFilter) {
         filteredData = filteredData.filter(
@@ -105,7 +72,6 @@ const FilterCard = ({
         );
       }
       setFinalFilterData(filteredData);
-
       return filteredData;
     };
 
@@ -113,18 +79,11 @@ const FilterCard = ({
       nameOfCollege: searchTerm,
     };
 
-    const updatedOptions = filterData(data).map((item:any) => ({
-      title: item.nameOfCollege || "",
-    }));
-    
-
-    setFilteredOptions(updatedOptions);
-  }, [searchTerm, stateFilter, divisionFilter, schoolData]);
-
+    filterData(data);
+  }, [searchTerm, stateFilter, divisionFilter, schoolData, setFinalFilterData]); 
   const handleSearchIconClick = () => {
     handleSubmit(handleFormSubmit)();
   };
-
   return (
     <>
       <FilterCardWrapper>
@@ -133,6 +92,7 @@ const FilterCard = ({
           Number of Schools {finalFilterData?.length}
         </AmenitiesDescription>
         <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
+
           <AmenitiesWrapper>
             {/* State */}
             <Controller
@@ -200,7 +160,6 @@ const FilterCard = ({
                 </div>
               )}
             />
-
             {/* Division */}
             <Controller
               name="division"
@@ -303,5 +262,4 @@ const FilterCard = ({
     </>
   );
 };
-
 export default FilterCard;

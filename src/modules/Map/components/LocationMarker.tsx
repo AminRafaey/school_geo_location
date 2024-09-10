@@ -18,8 +18,8 @@ const LocationMarker = ({ markers }: any) => {
     <>
       {markers?.map((marker: any, index: number) => {
         const position = [
-          parseFloat(marker?.lat || "0"),
-          parseFloat(marker?.long || "0"),
+          parseFloat(marker?.lat || 0),
+          parseFloat(marker?.long || 0),
         ];
         return (
           <MarkerComponent
