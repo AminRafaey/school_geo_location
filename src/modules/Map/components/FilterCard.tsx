@@ -61,6 +61,7 @@ const FilterCard = ({
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase())
         );
+        
       }
       setFinalFilterData(filteredData);
     };
