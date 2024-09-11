@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+
 import {
   Amenities,
   AmenitiesDescription,
@@ -27,7 +28,7 @@ const FilterCard = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("");
-  const [divisionFilter, setDivisionFilter] = useState("");
+  const [divisionFilter, setDivisionFilter] = useState<string[]>([]);
   const [searchTriggered, setSearchTriggered] = useState(false);
 
   const divisionsDataFilter = schoolData?.filter(
@@ -52,9 +53,9 @@ const FilterCard = ({
           (schoolsData: any) => schoolsData?.state === stateFilter
         );
       }
-      if (divisionFilter) {
-        filteredData = filteredData.filter(
-          (schoolsData: any) => schoolsData?.division === divisionFilter
+      if (divisionFilter.length > 0) {
+        filteredData = filteredData.filter((schoolsData: any) =>
+          divisionFilter.includes(schoolsData?.division)
         );
       }
       if (searchTriggered && searchTerm) {
@@ -76,17 +77,20 @@ const FilterCard = ({
     searchTriggered,
     setFinalFilterData,
   ]);
+
   const handleSearchIconClick = () => {
     setSearchTriggered(true);
     handleFormSubmit();
   };
+
   const handleClearFilters = () => {
     setSearchTerm("");
     setStateFilter("");
-    setDivisionFilter("");
+    setDivisionFilter([]);
     setSearchTriggered(false);
     handleFormSubmit();
   };
+
   return (
     <FilterCardWrapper>
       <Amenities>Schools</Amenities>
@@ -102,7 +106,7 @@ const FilterCard = ({
               value={stateFilter}
               onChange={(event, newValue) => {
                 setStateFilter(newValue || "");
-                setDivisionFilter("");
+                setDivisionFilter([]);
               }}
               options={stateData || []}
               getOptionLabel={(option) => option || ""}
@@ -152,54 +156,63 @@ const FilterCard = ({
 
           {/* Division */}
           <div style={{ marginBottom: "20px" }}>
-            <FormControl variant="outlined" sx={{ width: "100%" }}>
-              <InputLabel
-                sx={{
-                  color: "#b0b0b0",
-                  "&.Mui-focused": {
-                    color: "#b0b0b0",
-                  },
-                }}
-              >
-                Division
-              </InputLabel>
-              <Select
-                value={divisionFilter}
-                onChange={(e) => setDivisionFilter(String(e.target.value))}
-                label="Division"
-                sx={{
-                  backgroundColor: "#1B1B1B",
-                  color: "#b0b0b0",
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#3d3d3d",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#737373",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#737373",
-                    },
-                  },
-                  "& .MuiSelect-icon": {
-                    color: "#b0b0b0",
-                  },
-                  "& .MuiMenuItem-root": {
+            <Autocomplete
+              multiple
+              value={divisionFilter}
+              onChange={(event, newValue) => {
+                setDivisionFilter(newValue || []);
+              }}
+              options={divisionsData || []}
+              getOptionLabel={(option) => option || ""}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Division"
+                  variant="outlined"
+                  sx={{
                     backgroundColor: "#1B1B1B",
                     color: "#b0b0b0",
-                    "&:hover": {
-                      backgroundColor: "#737373",
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#3d3d3d",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#737373",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#737373",
+                      },
+                      "& input": {
+                        color: "#b0b0b0",
+                      },
                     },
-                  },
-                }}
-              >
-                {divisionsData.map((option:any) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                    "& .MuiInputLabel-root": {
+                      color: "#b0b0b0",
+                    },
+                  }}
+                />
+              )}
+              sx={{
+                width: "100%",
+                "& .MuiAutocomplete-popupIndicator": {
+                  color: "#b0b0b0",
+                },
+                "& .MuiAutocomplete-clearIndicator": {
+                  color: "#b0b0b0",
+                },
+                "& .MuiAutocomplete-listbox": {
+                  backgroundColor: "#1B1B1B",
+                  color: "#b0b0b0",
+                },
+                "& .MuiChip-root": {
+                  backgroundColor: "#737373", // Change chip background color
+                  color: "#b0b0b0", // Change chip text color
+                },
+                "& .MuiChip-deleteIcon": {
+                  color: "#b0b0b0", // Change delete icon color on chips
+                },
+              }}
+            />
           </div>
 
           {/* Search */}
@@ -251,4 +264,5 @@ const FilterCard = ({
     </FilterCardWrapper>
   );
 };
+
 export default FilterCard;
