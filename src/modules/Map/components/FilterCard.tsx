@@ -3,7 +3,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
-import BasicSelect from "@/shared/components/BasicSelect/BasicSelect";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import {
   Amenities,
   AmenitiesDescription,
@@ -28,6 +28,7 @@ const FilterCard = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState("");
   const [divisionFilter, setDivisionFilter] = useState("");
+  const [searchTriggered, setSearchTriggered] = useState(false);
 
   const divisionsDataFilter = schoolData?.filter(
     (object: any, index: number, self: any) =>
@@ -42,6 +43,7 @@ const FilterCard = ({
       index === self.findIndex((t: any) => t.state === object.state)
   );
   const stateData = stateDataFilter?.map((data: any) => data?.state).sort();
+
   useEffect(() => {
     const filterData = () => {
       let filteredData = schoolData;
@@ -55,21 +57,34 @@ const FilterCard = ({
           (schoolsData: any) => schoolsData?.division === divisionFilter
         );
       }
-      if (searchTerm) {
+      if (searchTriggered && searchTerm) {
         filteredData = filteredData.filter((schoolsData: any) =>
           schoolsData?.nameOfCollege
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase())
         );
-        
       }
       setFinalFilterData(filteredData);
     };
 
     filterData();
-  }, [searchTerm, stateFilter, divisionFilter, schoolData, setFinalFilterData]);
-
+  }, [
+    searchTerm,
+    stateFilter,
+    divisionFilter,
+    schoolData,
+    searchTriggered,
+    setFinalFilterData,
+  ]);
   const handleSearchIconClick = () => {
+    setSearchTriggered(true);
+    handleFormSubmit();
+  };
+  const handleClearFilters = () => {
+    setSearchTerm("");
+    setStateFilter("");
+    setDivisionFilter("");
+    setSearchTriggered(false);
     handleFormSubmit();
   };
   return (
@@ -137,15 +152,56 @@ const FilterCard = ({
 
           {/* Division */}
           <div style={{ marginBottom: "20px" }}>
-            <BasicSelect
-              value={divisionFilter}
-              onChange={(e) => setDivisionFilter(String(e))}
-              options={divisionsData}
-              width="100%"
-              backgroundColor="#1B1B1B"
-              label="Division"
-            />
+            <FormControl variant="outlined" sx={{ width: "100%" }}>
+              <InputLabel
+                sx={{
+                  color: "#b0b0b0",
+                  "&.Mui-focused": {
+                    color: "#b0b0b0",
+                  },
+                }}
+              >
+                Division
+              </InputLabel>
+              <Select
+                value={divisionFilter}
+                onChange={(e) => setDivisionFilter(String(e.target.value))}
+                label="Division"
+                sx={{
+                  backgroundColor: "#1B1B1B",
+                  color: "#b0b0b0",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#3d3d3d",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#737373",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#737373",
+                    },
+                  },
+                  "& .MuiSelect-icon": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiMenuItem-root": {
+                    backgroundColor: "#1B1B1B",
+                    color: "#b0b0b0",
+                    "&:hover": {
+                      backgroundColor: "#737373",
+                    },
+                  },
+                }}
+              >
+                {divisionsData.map((option:any) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
+
           {/* Search */}
           <TextField
             label="Search"
@@ -190,18 +246,9 @@ const FilterCard = ({
           />
         </AmenitiesWrapper>
 
-        <CleanAll
-          onClick={() => {
-            setSearchTerm("");
-            setStateFilter("");
-            setDivisionFilter("");
-          }}
-        >
-          Clear Filter
-        </CleanAll>
+        <CleanAll onClick={handleClearFilters}>Clear Filter</CleanAll>
       </form>
     </FilterCardWrapper>
   );
 };
-
 export default FilterCard;
