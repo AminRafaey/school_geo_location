@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LocationMarker from "./components/LocationMarker";
 import { Map } from "react-map-gl";
 import FilterCard from "./components/FilterCard";
@@ -10,33 +10,12 @@ import {
 
 const SchoolsMap = ({ schoolData }: any) => {
   const [finalFilterData, setFinalFilterData] = useState(schoolData || []);
-  const handleFormSubmit = (data: any) => {
-    let filteredData = schoolData;
-
-    if (data?.nameOfCollege) {
-      filteredData = schoolData?.filter((schoolsData: any) =>
-        schoolsData?.nameOfCollege
-          ?.toLowerCase()
-          .includes(data?.nameOfCollege?.toLowerCase())
-      );
-    } else if (data?.division) {
-      filteredData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.division === data?.division
-      );
-    } else if (data?.state) {
-      filteredData = schoolData?.filter(
-        (schoolsData: any) => schoolsData?.state === data?.state
-      );
-    }
-    setFinalFilterData(filteredData || []);
-  };
   return (
     <>
       <LocationPageWrapper>
         <LocationPageSection>
           <FilterCard
             schoolData={schoolData}
-            handleFormSubmit={handleFormSubmit}
             finalFilterData={finalFilterData}
             setFinalFilterData={setFinalFilterData}
           />
