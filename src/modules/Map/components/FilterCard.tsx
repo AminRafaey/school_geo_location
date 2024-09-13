@@ -1,10 +1,9 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
-
+import { debounce } from "lodash";
 import {
   Amenities,
   AmenitiesDescription,
@@ -19,75 +18,84 @@ const FilterCard = ({
   handleFormSubmit,
   setFinalFilterData,
 }: {
-  setFinalFilterData: any;
-  schoolData: any;
+  setFinalFilterData: (data: any) => void;
+  schoolData: any[];
   finalFilterData: {
     length: number;
   };
-  handleFormSubmit: any;
+  handleFormSubmit: () => void;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [stateFilter, setStateFilter] = useState("");
+  const [stateFilter, setStateFilter] = useState<string[]>([]);
   const [divisionFilter, setDivisionFilter] = useState<string[]>([]);
-  const [searchTriggered, setSearchTriggered] = useState(false);
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
 
-  const divisionsDataFilter = schoolData?.filter(
-    (object: any, index: number, self: any) =>
-      index === self.findIndex((t: any) => t.division === object.division)
-  );
-  const divisionsData = divisionsDataFilter
-    .map((data: any) => data?.division)
-    .sort();
+  const divisionsData = useMemo(() => {
+    const uniqueDivisions = schoolData?.filter(
+      (object, index, self) =>
+        index === self.findIndex((t) => t.division === object.division)
+    );
+    return uniqueDivisions?.map((data) => data?.division).sort();
+  }, [schoolData]);
 
-  const stateDataFilter = schoolData?.filter(
-    (object: any, index: number, self: any) =>
-      index === self.findIndex((t: any) => t.state === object.state)
-  );
-  const stateData = stateDataFilter?.map((data: any) => data?.state).sort();
+  const stateData = useMemo(() => {
+    const uniqueStates = schoolData?.filter(
+      (object, index, self) =>
+        index === self.findIndex((t) => t.state === object.state)
+    );
+    return uniqueStates?.map((data) => data?.state).sort();
+  }, [schoolData]);
 
-  useEffect(() => {
-    const filterData = () => {
-      let filteredData = schoolData;
-      if (stateFilter) {
-        filteredData = filteredData.filter(
-          (schoolsData: any) => schoolsData?.state === stateFilter
-        );
-      }
-      if (divisionFilter.length > 0) {
-        filteredData = filteredData.filter((schoolsData: any) =>
-          divisionFilter.includes(schoolsData?.division)
-        );
-      }
-      if (searchTriggered && searchTerm) {
-        filteredData = filteredData.filter((schoolsData: any) =>
-          schoolsData?.nameOfCollege
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase())
-        );
-      }
-      setFinalFilterData(filteredData);
-    };
+  const filteredData = useMemo(() => {
+    let data = schoolData;
 
-    filterData();
-  }, [
-    searchTerm,
-    stateFilter,
-    divisionFilter,
-    schoolData,
-    searchTriggered,
-    setFinalFilterData,
+    if (stateFilter.length > 0) {
+      data = data.filter((schoolsData) =>
+        stateFilter.includes(schoolsData?.state)
+      );
+    }
+    if (divisionFilter.length > 0) {
+      data = data.filter((schoolsData) =>
+        divisionFilter.includes(schoolsData?.division)
+      );
+    }
+    if (localSearchTerm) {
+      data = data.filter((schoolsData) =>
+        schoolsData?.nameOfCollege
+          ?.toLowerCase()
+          .includes(localSearchTerm.toLowerCase())
+      );
+    }
+    return data;
+  }, [schoolData, stateFilter, divisionFilter, localSearchTerm]);
+
+  const filterData = useCallback(() => {
+    setFinalFilterData(filteredData);
+  }, [filteredData, setFinalFilterData]);
+
+  const debouncedFilterData = useCallback(debounce(filterData, 300), [
+    filterData,
   ]);
 
-  const handleSearchIconClick = () => {
-    setSearchTriggered(true);
+  useEffect(() => {
+    debouncedFilterData();
+    return () => {
+      debouncedFilterData.cancel(); 
+    };
+  }, [debouncedFilterData]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLocalSearchTerm(searchTerm);
     handleFormSubmit();
   };
 
   const handleClearFilters = () => {
     setSearchTerm("");
-    setStateFilter("");
+    setLocalSearchTerm("");
+    setStateFilter([]);
     setDivisionFilter([]);
-    setSearchTriggered(false);
+    setFinalFilterData(schoolData);
     handleFormSubmit();
   };
 
@@ -98,15 +106,15 @@ const FilterCard = ({
         Number of Schools {finalFilterData?.length}
       </AmenitiesDescription>
 
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={handleSearch}>
         <AmenitiesWrapper>
           {/* State */}
           <div style={{ marginBottom: "20px" }}>
             <Autocomplete
+              multiple
               value={stateFilter}
               onChange={(event, newValue) => {
-                setStateFilter(newValue || "");
-                setDivisionFilter([]);
+                setStateFilter(newValue || []);
               }}
               options={stateData || []}
               getOptionLabel={(option) => option || ""}
@@ -117,7 +125,6 @@ const FilterCard = ({
                   variant="outlined"
                   sx={{
                     backgroundColor: "#1B1B1B",
-                    color: "#b0b0b0",
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#3d3d3d",
@@ -135,22 +142,26 @@ const FilterCard = ({
                     "& .MuiInputLabel-root": {
                       color: "#b0b0b0",
                     },
+                    "& .MuiAutocomplete-popupIndicator": {
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiAutocomplete-clearIndicator": {
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiAutocomplete-listbox": {
+                      backgroundColor: "#1B1B1B",
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiChip-root": {
+                      backgroundColor: "#737373",
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiChip-deleteIcon": {
+                      color: "#b0b0b0",
+                    },
                   }}
                 />
               )}
-              sx={{
-                width: "100%",
-                "& .MuiAutocomplete-popupIndicator": {
-                  color: "#b0b0b0",
-                },
-                "& .MuiAutocomplete-clearIndicator": {
-                  color: "#b0b0b0",
-                },
-                "& .MuiAutocomplete-listbox": {
-                  backgroundColor: "#1B1B1B",
-                  color: "#b0b0b0",
-                },
-              }}
             />
           </div>
 
@@ -171,7 +182,6 @@ const FilterCard = ({
                   variant="outlined"
                   sx={{
                     backgroundColor: "#1B1B1B",
-                    color: "#b0b0b0",
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#3d3d3d",
@@ -189,29 +199,26 @@ const FilterCard = ({
                     "& .MuiInputLabel-root": {
                       color: "#b0b0b0",
                     },
+                    "& .MuiAutocomplete-popupIndicator": {
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiAutocomplete-clearIndicator": {
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiAutocomplete-listbox": {
+                      backgroundColor: "#1B1B1B",
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiChip-root": {
+                      backgroundColor: "#737373",
+                      color: "#b0b0b0",
+                    },
+                    "& .MuiChip-deleteIcon": {
+                      color: "#b0b0b0",
+                    },
                   }}
                 />
               )}
-              sx={{
-                width: "100%",
-                "& .MuiAutocomplete-popupIndicator": {
-                  color: "#b0b0b0",
-                },
-                "& .MuiAutocomplete-clearIndicator": {
-                  color: "#b0b0b0",
-                },
-                "& .MuiAutocomplete-listbox": {
-                  backgroundColor: "#1B1B1B",
-                  color: "#b0b0b0",
-                },
-                "& .MuiChip-root": {
-                  backgroundColor: "#737373", // Change chip background color
-                  color: "#b0b0b0", // Change chip text color
-                },
-                "& .MuiChip-deleteIcon": {
-                  color: "#b0b0b0", // Change delete icon color on chips
-                },
-              }}
             />
           </div>
 
@@ -220,6 +227,11 @@ const FilterCard = ({
             label="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch(e as any);
+              }
+            }}
             variant="outlined"
             InputProps={{
               endAdornment: (
@@ -229,7 +241,7 @@ const FilterCard = ({
                       color: "#737373 !important",
                       cursor: "pointer",
                     }}
-                    onClick={handleSearchIconClick}
+                    onClick={handleSearch}
                   />
                 </InputAdornment>
               ),
@@ -240,7 +252,6 @@ const FilterCard = ({
             }}
             sx={{
               backgroundColor: "#1B1B1B",
-              color: "#b0b0b0",
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
                   borderColor: "#3d3d3d",
@@ -250,6 +261,9 @@ const FilterCard = ({
                 },
                 "&.Mui-focused fieldset": {
                   borderColor: "#737373",
+                },
+                "& input": {
+                  color: "#b0b0b0",
                 },
               },
               "& .MuiInputLabel-root": {
