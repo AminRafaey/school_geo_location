@@ -100,167 +100,173 @@ const FilterCard = ({
       <AmenitiesDescription>
         Number of Schools {finalFilterData?.length}
       </AmenitiesDescription>
-        <AmenitiesWrapper>
-          {/* State */}
-          <div style={{ marginBottom: "20px" }}>
-            <Autocomplete
-              multiple
-              value={stateFilter}
-              onChange={(event, newValue) => {
-                setStateFilter(newValue || []);
-              }}
-              options={stateData || []}
-              getOptionLabel={(option) => option || ""}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="State"
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: "#1B1B1B",
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#3d3d3d",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#737373",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#737373",
-                      },
-                      "& input": {
-                        color: "#b0b0b0",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiAutocomplete-popupIndicator": {
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiAutocomplete-clearIndicator": {
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiAutocomplete-listbox": {
-                      backgroundColor: "#1B1B1B",
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiChip-root": {
-                      backgroundColor: "#737373",
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiChip-deleteIcon": {
-                      color: "#b0b0b0",
-                    },
-                  }}
-                />
-              )}
-            />
-          </div>
-
-          {/* Division */}
-          <div style={{ marginBottom: "20px" }}>
-            <Autocomplete
-              multiple
-              value={divisionFilter}
-              onChange={(event, newValue) => {
-                setDivisionFilter(newValue || []);
-              }}
-              options={divisionsData || []}
-              getOptionLabel={(option) => option || ""}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Division"
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: "#1B1B1B",
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#3d3d3d",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#737373",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#737373",
-                      },
-                      "& input": {
-                        color: "#b0b0b0",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiAutocomplete-popupIndicator": {
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiAutocomplete-clearIndicator": {
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiAutocomplete-listbox": {
-                      backgroundColor: "#1B1B1B",
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiChip-root": {
-                      backgroundColor: "#737373",
-                      color: "#b0b0b0",
-                    },
-                    "& .MuiChip-deleteIcon": {
-                      color: "#b0b0b0",
-                    },
-                  }}
-                />
-              )}
-            />
-          </div>
-
-          {/* Search */}
-          <TextField
-            label="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            variant="outlined"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon
-                    sx={{
-                      color: "#737373 !important",
-                      cursor: "pointer",
-                    }}
-                  />
-                </InputAdornment>
-              ),
-              style: {
-                color: "#b0b0b0",
-                backgroundColor: "#1B1B1B",
-              },
+      <AmenitiesWrapper>
+        {/* State */}
+        <div style={{ marginBottom: "20px" }}>
+          <Autocomplete
+            multiple
+            value={stateFilter}
+            onChange={(event, newValue) => {
+              setStateFilter(newValue || []);
             }}
-            sx={{
-              backgroundColor: "#1B1B1B",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d3d3d",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#737373",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#737373",
-                },
-                "& input": {
-                  color: "#b0b0b0",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#b0b0b0",
-              },
-            }}
+            options={stateData || []}
+            getOptionLabel={(option) => option || ""}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="State"
+                variant="outlined"
+                sx={{
+                  backgroundColor: "#1B1B1B",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#3d3d3d",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#737373",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#737373",
+                    },
+                    "& input": {
+                      color: "#b0b0b0",
+                    },
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#737373",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#737373",
+                  },
+                  "& input": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiAutocomplete-listbox": {
+                    backgroundColor: "#1B1B1B",
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiChip-root": {
+                    backgroundColor: "#737373",
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiChip-deleteIcon": {
+                    color: "#b0b0b0",
+                  },
+                }}
+              />
+            )}
           />
-        </AmenitiesWrapper>
+        </div>
 
-        <CleanAll onClick={handleClearFilters}>Clear Filter</CleanAll>
+        {/* Division */}
+        <div style={{ marginBottom: "20px" }}>
+          <Autocomplete
+            multiple
+            value={divisionFilter}
+            onChange={(event, newValue) => {
+              setDivisionFilter(newValue || []);
+            }}
+            options={divisionsData || []}
+            getOptionLabel={(option) => option || ""}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Division"
+                variant="outlined"
+                sx={{
+                  backgroundColor: "#1B1B1B",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "#3d3d3d",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "#737373",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#737373",
+                    },
+                    "& input": {
+                      color: "#b0b0b0",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiAutocomplete-listbox": {
+                    backgroundColor: "#1B1B1B",
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiChip-root": {
+                    backgroundColor: "#737373",
+                    color: "#b0b0b0",
+                  },
+                  "& .MuiChip-deleteIcon": {
+                    color: "#b0b0b0",
+                  },
+                }}
+              />
+            )}
+          />
+        </div>
+
+        {/* Search */}
+        <TextField
+          label="Search"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          variant="outlined"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon
+                  sx={{
+                    color: "#737373 !important",
+                    cursor: "pointer",
+                  }}
+                />
+              </InputAdornment>
+            ),
+            style: {
+              color: "#b0b0b0",
+              backgroundColor: "#1B1B1B",
+            },
+          }}
+          sx={{
+            backgroundColor: "#1B1B1B",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#3d3d3d",
+              },
+              "&:hover fieldset": {
+                borderColor: "#737373",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#737373",
+              },
+              "& input": {
+                color: "#b0b0b0",
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "#b0b0b0",
+            },
+          }}
+        />
+      </AmenitiesWrapper>
+
+      <CleanAll onClick={handleClearFilters}>Clear Filter</CleanAll>
     </FilterCardWrapper>
   );
 };
