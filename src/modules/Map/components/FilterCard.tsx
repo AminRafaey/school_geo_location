@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
-import { debounce } from "lodash";
 import {
   Amenities,
   AmenitiesDescription,
@@ -11,11 +10,10 @@ import {
   CleanAll,
   FilterCardWrapper,
 } from "./location.styled";
-
+import { debounce } from "lodash";
 const FilterCard = ({
   schoolData,
   finalFilterData,
-  handleFormSubmit,
   setFinalFilterData,
 }: {
   setFinalFilterData: (data: any) => void;
@@ -23,55 +21,59 @@ const FilterCard = ({
   finalFilterData: {
     length: number;
   };
-  handleFormSubmit: () => void;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [stateFilter, setStateFilter] = useState<string[]>([]);
   const [divisionFilter, setDivisionFilter] = useState<string[]>([]);
-  const [localSearchTerm, setLocalSearchTerm] = useState("");
 
-  const divisionsData = useMemo(() => {
-    const uniqueDivisions = schoolData?.filter(
-      (object, index, self) =>
-        index === self.findIndex((t) => t.division === object.division)
-    );
-    return uniqueDivisions?.map((data) => data?.division).sort();
-  }, [schoolData]);
+  const divisionsDataFilter = schoolData?.filter(
+    (object, index, self) =>
+      index === self.findIndex((t) => t.division === object.division)
+  );
+  const divisionsData = divisionsDataFilter
+    .map((data) => data?.division)
+    .sort();
 
-  const stateData = useMemo(() => {
-    const uniqueStates = schoolData?.filter(
-      (object, index, self) =>
-        index === self.findIndex((t) => t.state === object.state)
-    );
-    return uniqueStates?.map((data) => data?.state).sort();
-  }, [schoolData]);
-
-  const filteredData = useMemo(() => {
-    let data = schoolData;
-
-    if (stateFilter.length > 0) {
-      data = data.filter((schoolsData) =>
-        stateFilter.includes(schoolsData?.state)
-      );
-    }
-    if (divisionFilter.length > 0) {
-      data = data.filter((schoolsData) =>
-        divisionFilter.includes(schoolsData?.division)
-      );
-    }
-    if (localSearchTerm) {
-      data = data.filter((schoolsData) =>
-        schoolsData?.nameOfCollege
-          ?.toLowerCase()
-          .includes(localSearchTerm.toLowerCase())
-      );
-    }
-    return data;
-  }, [schoolData, stateFilter, divisionFilter, localSearchTerm]);
+  const stateDataFilter = schoolData?.filter(
+    (object, index, self) =>
+      index === self.findIndex((t) => t.state === object.state)
+  );
+  const stateData = stateDataFilter?.map((data) => data?.state).sort();
 
   const filterData = useCallback(() => {
+    let filteredData = schoolData;
+
+    if (stateFilter.length > 0) {
+      filteredData = filteredData.filter((schoolsData) =>
+        stateFilter.includes(schoolsData?.state)
+      );            
+    }
+    if (divisionFilter.length > 0) {
+      filteredData = filteredData.filter((schoolsData) =>
+        divisionFilter.includes(schoolsData?.division)
+      
+      );
+    }
+    if (searchTerm) {
+      filteredData = filteredData.filter(
+        (schoolsData) =>
+            schoolsData?.state
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          schoolsData?.nameOfCollege
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) 
+        
+      );      
+    }
     setFinalFilterData(filteredData);
-  }, [filteredData, setFinalFilterData]);
+  }, [
+    schoolData,
+    stateFilter,
+    divisionFilter,
+    searchTerm,
+    setFinalFilterData,
+  ]);
 
   const debouncedFilterData = useCallback(debounce(filterData, 300), [
     filterData,
@@ -80,23 +82,16 @@ const FilterCard = ({
   useEffect(() => {
     debouncedFilterData();
     return () => {
-      debouncedFilterData.cancel(); 
+      debouncedFilterData.cancel();
     };
   }, [debouncedFilterData]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocalSearchTerm(searchTerm);
-    handleFormSubmit();
-  };
 
   const handleClearFilters = () => {
     setSearchTerm("");
-    setLocalSearchTerm("");
     setStateFilter([]);
     setDivisionFilter([]);
     setFinalFilterData(schoolData);
-    handleFormSubmit();
   };
 
   return (
@@ -105,8 +100,6 @@ const FilterCard = ({
       <AmenitiesDescription>
         Number of Schools {finalFilterData?.length}
       </AmenitiesDescription>
-
-      <form onSubmit={handleSearch}>
         <AmenitiesWrapper>
           {/* State */}
           <div style={{ marginBottom: "20px" }}>
@@ -227,11 +220,6 @@ const FilterCard = ({
             label="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch(e as any);
-              }
-            }}
             variant="outlined"
             InputProps={{
               endAdornment: (
@@ -241,7 +229,6 @@ const FilterCard = ({
                       color: "#737373 !important",
                       cursor: "pointer",
                     }}
-                    onClick={handleSearch}
                   />
                 </InputAdornment>
               ),
@@ -274,7 +261,6 @@ const FilterCard = ({
         </AmenitiesWrapper>
 
         <CleanAll onClick={handleClearFilters}>Clear Filter</CleanAll>
-      </form>
     </FilterCardWrapper>
   );
 };
