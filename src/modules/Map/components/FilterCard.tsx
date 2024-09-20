@@ -11,7 +11,6 @@ import {
   FilterCardWrapper,
 } from "./location.styled";
 import { debounce } from "lodash";
-
 const FilterCard = ({
   schoolData,
   finalFilterData,
@@ -47,19 +46,25 @@ const FilterCard = ({
     if (stateFilter.length > 0) {
       filteredData = filteredData.filter((schoolsData) =>
         stateFilter.includes(schoolsData?.state)
-      );
+      );            
     }
     if (divisionFilter.length > 0) {
       filteredData = filteredData.filter((schoolsData) =>
         divisionFilter.includes(schoolsData?.division)
+      
       );
     }
     if (searchTerm) {
-      filteredData = filteredData.filter((schoolsData) =>
-        schoolsData?.nameOfCollege
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase())
-      );
+      filteredData = filteredData.filter(
+        (schoolsData) =>
+            schoolsData?.state
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          schoolsData?.nameOfCollege
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) 
+        
+      );      
     }
     setFinalFilterData(filteredData);
   }, [
@@ -96,6 +101,7 @@ const FilterCard = ({
         Number of Schools {finalFilterData?.length}
       </AmenitiesDescription>
       <AmenitiesWrapper>
+        {/* State */}
         <div style={{ marginBottom: "20px" }}>
           <Autocomplete
             multiple
@@ -125,6 +131,10 @@ const FilterCard = ({
                     "& input": {
                       color: "#b0b0b0",
                     },
+                    "& input::placeholder": {
+                      color: "#b0b0b0", 
+                      opacity: 1, 
+                    },
                   },
                   "& .MuiInputLabel-root": {
                     color: "#b0b0b0",
@@ -152,6 +162,7 @@ const FilterCard = ({
           />
         </div>
 
+        {/* Division */}
         <div style={{ marginBottom: "20px" }}>
           <Autocomplete
             multiple
@@ -208,6 +219,7 @@ const FilterCard = ({
           />
         </div>
 
+        {/* Search */}
         <TextField
           label="Search"
           value={searchTerm}
