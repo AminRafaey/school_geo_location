@@ -131,14 +131,12 @@ const FilterCard = ({
                     "& input": {
                       color: "#b0b0b0",
                     },
+                    "& input::placeholder": {
+                      color: "#b0b0b0", 
+                      opacity: 1, 
+                    },
                   },
-                  "&:hover fieldset": {
-                    borderColor: "#737373",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#737373",
-                  },
-                  "& input": {
+                  "& .MuiInputLabel-root": {
                     color: "#b0b0b0",
                   },
                   "& .MuiAutocomplete-popupIndicator": {
